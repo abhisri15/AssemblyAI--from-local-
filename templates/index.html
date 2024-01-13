@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transcription and Sentiment Analysis Result</title>
+</head>
+<body>
+
+<h1>Transcription and Sentiment Analysis Result</h1>
+
+<!-- Add a form for file upload -->
+<form method="POST" action="/upload" enctype="multipart/form-data">
+    <label for="videoFile">Upload Video:</label>
+    <input type="file" name="videoFile" accept="video/*" required>
+    <button type="submit">Submit</button>
+</form>
+
+{% if result_data %}
+    {% for item in result_data %}
+        <p>
+            <strong>{{ item['speaker'] }} ({{ item['start'] }} - {{ item['end'] }}):</strong> {{ item['transcription'] }}
+        </p>
+        <p>
+            <strong>Sentiment:</strong> {{ item['sentiment'] }}
+            <br>
+            <strong>Confidence:</strong> {{ item['confidence'] }}
+        </p>
+        <button onclick="seekTo('{{ item['start'] }}')">Seek to {{ item['start'] }}</button>
+    {% endfor %}
+{% endif %}
+
+{% if summary %}
+    <h2>Summary:</h2>
+    <p id="summaryText">{{ summary }}</p>
+    <button onclick="toggleSummary()">Toggle Summary</button>
+{% endif %}
+
+{% if media_file %}
+    <h2>Media:</h2>
+    <video id="mediaPlayer" width="640" height="360" controls>
+        <source src="{{ url_for('media') }}">
+        Your browser does not support the video tag.
+    </video>
+{% endif %}
+
+<script>
+    function seekTo(timestamp) {
+        const [hours, minutes, seconds] = timestamp.split(':').map(parseFloat);
+        const totalSeconds = hours * 3600 + minutes * 60 + seconds;
+        document.getElementById('mediaPlayer').currentTime = totalSeconds;
+    }
+
+    function toggleSummary() {
+        const summaryText = document.getElementById('summaryText');
+        summaryText.style.display = (summaryText.style.display === 'none') ? 'block' : 'none';
+    }
+</script>
+
+</body>
+</html>
