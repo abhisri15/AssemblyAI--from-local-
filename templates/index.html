@@ -41,7 +41,7 @@
 {% if media_file %}
     <h2>Media:</h2>
     <video id="mediaPlayer" width="640" height="360" controls>
-        <source src="{{ url_for('media') }}">
+        <source src="{{ url_for('media') }}?t={{ timestamp }}">
         Your browser does not support the video tag.
     </video>
 {% endif %}
@@ -62,6 +62,22 @@
     function hideUploadForm() {
         document.getElementById('uploadForm').style.display = 'none';
     }
+
+    // Update video source when a new file is uploaded
+    function updateVideoSource() {
+        const videoPlayer = document.getElementById('mediaPlayer');
+        const videoSource = document.querySelector('#mediaPlayer source');
+
+        // Add a timestamp or unique identifier to the URL to prevent caching
+        const timestamp = new Date().getTime();
+        videoSource.src = "{{ url_for('media') }}?t=" + timestamp;
+
+        videoPlayer.load();
+        videoPlayer.play();
+    }
+
+    // Call the function to update the video source after file upload
+    updateVideoSource();
 </script>
 
 </body>
