@@ -10,24 +10,26 @@
 <h1>Transcription and Sentiment Analysis Result</h1>
 
 <!-- Add a form for file upload -->
-<form method="POST" action="/upload" enctype="multipart/form-data">
+<form id="uploadForm" method="POST" action="/upload" enctype="multipart/form-data">
     <label for="videoFile">Upload Video:</label>
     <input type="file" name="videoFile" accept="video/*" required>
     <button type="submit">Submit</button>
 </form>
 
 {% if result_data %}
-    {% for item in result_data %}
-        <p>
-            <strong>{{ item['speaker'] }} ({{ item['start'] }} - {{ item['end'] }}):</strong> {{ item['transcription'] }}
-        </p>
-        <p>
-            <strong>Sentiment:</strong> {{ item['sentiment'] }}
-            <br>
-            <strong>Confidence:</strong> {{ item['confidence'] }}
-        </p>
-        <button onclick="seekTo('{{ item['start'] }}')">Seek to {{ item['start'] }}</button>
-    {% endfor %}
+    <div id="transcriptionResults">
+        {% for item in result_data %}
+            <p>
+                <strong>{{ item['speaker'] }} ({{ item['start'] }} - {{ item['end'] }}):</strong> {{ item['transcription'] }}
+            </p>
+            <p>
+                <strong>Sentiment:</strong> {{ item['sentiment'] }}
+                <br>
+                <strong>Confidence:</strong> {{ item['confidence'] }}
+            </p>
+            <button onclick="seekTo('{{ item['start'] }}')">Seek to {{ item['start'] }}</button>
+        {% endfor %}
+    </div>
 {% endif %}
 
 {% if summary %}
@@ -54,6 +56,11 @@
     function toggleSummary() {
         const summaryText = document.getElementById('summaryText');
         summaryText.style.display = (summaryText.style.display === 'none') ? 'block' : 'none';
+    }
+
+    // Function to hide the file upload form after submission
+    function hideUploadForm() {
+        document.getElementById('uploadForm').style.display = 'none';
     }
 </script>
 
